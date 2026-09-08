@@ -1,4 +1,3 @@
-<!-- templates/index.html -->
 <!DOCTYPE html>
 <html lang="th">
 <head>
@@ -6,410 +5,568 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>KMITL TABLE TENNIS CLUB</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* CSS สำหรับเอฟเฟกต์คลิก */
-        .click-particle {
-            position: fixed;
-            pointer-events: none;
-            font-size: 24px;
-            z-index: 9999;
-            user-select: none;
-            animation: floatUpFade 0.7s cubic-bezier(0.18, 0.89, 0.32, 1.28) forwards;
+        body { background-color: #f1f5f9; }
+        .bg-custom-orange { background-color: #ea580c; }
+        .bg-custom-dark-orange { background-color: #c2410c; }
+        .bg-table-header { background-color: #f97316; }
+        .bg-history-header { background-color: #fef3c7; }
+        
+        /* Animation สำหรับมินิเกมและคำคม */
+        @keyframes pingpong-bounce {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-18px) rotate(15deg); }
         }
-
-        @keyframes floatUpFade {
-            0% {
-                opacity: 1;
-                transform: translate(-50%, -50%) scale(0.4) rotate(0deg);
-            }
-            50% {
-                opacity: 1;
-                transform: translate(-50%, -80px) scale(1.3) rotate(15deg);
-            }
-            100% {
-                opacity: 0;
-                transform: translate(-50%, -120px) scale(0.8) rotate(-15deg);
-            }
-        }
-
-        /* แอนิเมชันลูกปิงปองเด้ง 1 ครั้งเมื่อกด */
-        @keyframes bounceOnce {
-            0% { transform: translateY(0) scale(1); }
-            40% { transform: translateY(-20px) scale(1.15); }
-            100% { transform: translateY(0) scale(1); }
-        }
-        .animate-bounce-once {
-            animation: bounceOnce 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
+        .animate-pingpong { animation: pingpong-bounce 0.25s ease-in-out; }
+        .transition-opacity-300 { transition: opacity 0.3s ease; }
     </style>
 </head>
-<body class="bg-slate-100 min-h-screen font-sans text-slate-800 relative">
+<body class="min-h-screen font-sans text-slate-800 relative pb-16">
 
-    <header class="bg-orange-600 text-white shadow-lg sticky top-0 z-40">
-        <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
-            <div class="flex items-center space-x-4">
-                <img src="/static/logo.jpg" alt="Logo" class="w-20 h-20 rounded-full object-cover border-4 border-white shadow-md bg-white hover:rotate-12 transition transform cursor-pointer">
-                <h1 class="text-2xl font-bold flex items-center">
-                    KMITL TABLE TENNIS CLUB <i class="fa-solid fa-table-tennis-paddle-ball text-amber-200 ml-3"></i>
-                </h1>
+    <!-- Header -->
+    <header class="bg-custom-orange text-white shadow-md">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+            <div class="flex items-center space-x-3">
+                <div class="w-12 h-12 bg-white rounded-full flex items-center justify-center p-1 shadow">
+                    <img src="/static/logo.jpg" alt="Logo" class="w-full h-full object-contain rounded-full" onerror="this.onerror=null; this.src='https://cdn-icons-png.flaticon.com/5xl/3135/3135715.png';">
+                </div>
+                <h1 class="text-2xl font-black tracking-wide">KMITL TABLE TENNIS CLUB 🏓</h1>
             </div>
             <div class="flex items-center space-x-3">
-                <a href="/api/export-excel" class="bg-emerald-600 hover:bg-emerald-700 text-white font-medium px-4 py-2 rounded-lg text-sm transition shadow flex items-center">
-                    <i class="fa-solid fa-file-excel mr-1.5"></i> ดาวน์โหลด Excel (.xlsx)
-                </a>
-                <a href="/logout" class="bg-red-500 hover:bg-red-600 text-white font-medium px-3 py-2 rounded-lg text-sm transition shadow flex items-center">
-                    <i class="fa-solid fa-right-from-bracket mr-1"></i> ออกจากระบบ
+                <button onclick="downloadExcel()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-4 py-2 rounded-lg text-sm transition shadow flex items-center">
+                    <i class="fa-solid fa-file-excel mr-2"></i> ดาวน์โหลด Excel (.xlsx)
+                </button>
+                <a href="/logout" class="bg-red-500 hover:bg-red-600 text-white font-bold px-4 py-2 rounded-lg text-sm transition shadow flex items-center">
+                    <i class="fa-solid fa-right-from-bracket mr-2"></i> ออกจากระบบ
                 </a>
             </div>
+        </div>
+        
+        <!-- Workspace Bar -->
+        <div class="bg-custom-dark-orange px-6 py-2 text-sm text-white flex items-center space-x-3 max-w-7xl mx-auto">
+            <span class="font-bold">ห้อง: <span id="current-workspace-name" class="underline">101</span></span>
+            <button onclick="switchWorkspace()" class="bg-white text-orange-800 font-bold px-3 py-0.5 rounded text-xs hover:bg-orange-100 transition shadow-sm">
+                เปลี่ยน / สร้างห้อง
+            </button>
         </div>
     </header>
 
-    <main class="max-w-7xl mx-auto px-4 py-8 space-y-8">
+    <main class="max-w-7xl mx-auto px-6 py-6 space-y-6">
 
-        <!-- กล่องแบนเนอร์สุ่มคำคมแก้เบื่อ -->
-        <section class="bg-gradient-to-r from-orange-500 to-amber-500 rounded-xl p-4 text-white shadow-md flex justify-between items-center">
-            <div class="flex items-center space-x-3">
-                <span class="text-2xl">💡</span>
-                <div>
-                    <p class="text-xs text-orange-100 font-semibold">คำคมชาวปิงปองประจำวัน</p>
-                    <p id="quoteText" class="text-sm font-bold mt-0.5">"ตบไม่ลง ให้หยอด ตบแล้วหลุด ให้ยิ้มไว้ก่อน!"</p>
-                </div>
+        <!-- Quote Card (สุ่มคำคม) -->
+        <div class="bg-gradient-to-r from-amber-500 to-orange-400 text-white p-4 rounded-xl shadow-sm flex items-center justify-between">
+            <div class="flex items-center space-x-3 font-semibold text-base">
+                <span class="text-xl">💡</span>
+                <span id="quote-text" class="transition-opacity-300">"ตบไม่ลง ให้หยอด ตบแล้วหลุด ให้ยิ้มไว้ก่อน!"</span>
             </div>
-            <button onclick="randomQuote()" class="bg-white/20 hover:bg-white/30 text-white text-xs px-3 py-1.5 rounded-lg transition">
-                <i class="fa-solid fa-dice mr-1"></i> สุ่มคำคม
+            <button onclick="randomQuote()" class="bg-amber-100 hover:bg-white text-amber-900 font-bold px-3 py-1.5 rounded-lg text-xs transition shadow-sm flex items-center whitespace-nowrap">
+                🎲 สุ่มคำคม
             </button>
-        </section>
+        </div>
 
-        <!-- ตารางสรุปคะแนน -->
-        <section class="bg-white rounded-xl shadow p-6">
-            <h2 class="text-lg font-bold text-orange-950 mb-4"><i class="fa-solid fa-trophy text-amber-500 mr-2"></i> ตารางคะแนนและอันดับ</h2>
+        <!-- Standings Table -->
+        <div class="bg-white rounded-2xl shadow-sm overflow-hidden border border-slate-100 p-2">
+            <div class="p-4 flex items-center">
+                <span class="text-xl mr-2">🏆</span>
+                <h2 class="text-lg font-black text-amber-900">ตารางคะแนนและอันดับ</h2>
+            </div>
             <div class="overflow-x-auto">
-                <table class="w-full text-left border-collapse">
+                <table class="w-full text-center border-collapse">
                     <thead>
-                        <tr class="bg-orange-600 text-white text-sm">
-                            <th class="p-3 text-center">อันดับ</th>
-                            <th class="p-3">ชื่อนักกีฬา</th>
-                            <th class="p-3">สังกัด</th>
-                            <th class="p-3 text-center">แข่ง</th>
-                            <th class="p-3 text-center">ชนะ</th>
-                            <th class="p-3 text-center">แพ้</th>
-                            <th class="p-3 text-center">เซตได้</th>
-                            <th class="p-3 text-center">เซตเสีย</th>
-                            <th class="p-3 text-center">ผลต่างเซต</th>
-                            <th class="p-3 text-center">คะแนนรวม</th>
+                        <tr class="bg-table-header text-white text-sm font-bold">
+                            <th class="py-3 px-3 rounded-l-lg">อันดับ</th>
+                            <th class="py-3 px-4 text-left">ชื่อนักกีฬา</th>
+                            <th class="py-3 px-3">สังกัด</th>
+                            <th class="py-3 px-3">แข่ง</th>
+                            <th class="py-3 px-3">ชนะ</th>
+                            <th class="py-3 px-3">แพ้</th>
+                            <th class="py-3 px-3">เซตได้</th>
+                            <th class="py-3 px-3">เซตเสีย</th>
+                            <th class="py-3 px-3">ผลต่างเซต</th>
+                            <th class="py-3 px-3 rounded-r-lg">คะแนนรวม</th>
                         </tr>
                     </thead>
-                    <tbody id="standingsTable" class="divide-y divide-slate-200 text-sm"></tbody>
+                    <tbody id="standings-table-body" class="divide-y divide-slate-100 text-sm font-medium">
+                        <tr><td colspan="10" class="py-6 text-slate-400">กำลังโหลดข้อมูล...</td></tr>
+                    </tbody>
                 </table>
             </div>
-        </section>
+        </div>
 
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            <!-- ฟอร์มจัดการนักกีฬา -->
-            <section class="bg-white rounded-xl shadow p-6">
-                <div class="flex justify-between items-center mb-4">
-                    <h2 class="text-lg font-bold text-slate-800"><i class="fa-solid fa-users text-orange-600 mr-2"></i> รายชื่อนักกีฬา</h2>
-                    <!-- ปุ่ม Clear สำหรับล้างนักกีฬา -->
-                    <button onclick="clearAllPlayers()" class="bg-red-50 hover:bg-red-100 text-red-600 text-xs px-2.5 py-1 rounded-lg border border-red-200 transition flex items-center font-medium">
-                        <i class="fa-solid fa-trash-can mr-1"></i> ล้างนักกีฬา
-                    </button>
-                </div>
-                <form id="playerForm" class="space-y-3 mb-4">
-                    <input type="hidden" id="playerId">
-                    <input type="text" id="playerName" placeholder="ชื่อ-นามสกุล" required class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:border-orange-500">
-                    <input type="text" id="playerTeam" placeholder="สังกัด / ทีม" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:border-orange-500">
-                    <button type="submit" class="w-full bg-orange-600 text-white py-2 rounded-lg text-sm font-medium hover:bg-orange-700 transition">บันทึกข้อมูล</button>
-                </form>
-                <div id="playersList" class="divide-y divide-slate-100 max-h-60 overflow-y-auto"></div>
-            </section>
+        <!-- 2 Column Layout -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
 
-            <!-- ฟอร์มบันทึกผลการแข่งขัน -->
-            <section class="bg-white rounded-xl shadow p-6 lg:col-span-2">
-                <h2 class="text-lg font-bold text-slate-800 mb-4"><i class="fa-solid fa-plus-circle text-orange-600 mr-2"></i> บันทึกผลการแข่งขัน</h2>
-                <form id="matchForm" class="space-y-4 mb-6">
-                    <div class="grid grid-cols-2 gap-4">
-                        <select id="matchPlayerA" required class="p-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:border-orange-500"></select>
-                        <select id="matchPlayerB" required class="p-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:border-orange-500"></select>
+            <!-- Left Box: Player List -->
+            <div class="lg:col-span-4 space-y-4">
+                <div class="bg-white rounded-2xl shadow-sm p-5 border border-slate-100">
+                    <div class="flex justify-between items-center mb-4">
+                        <div class="flex items-center text-slate-800 font-extrabold text-base">
+                            <span class="text-orange-500 mr-2 text-lg">👥</span>
+                            <span>รายชื่อนักกีฬา</span>
+                        </div>
+                        <button onclick="clearPlayers()" class="bg-red-50 text-red-500 hover:bg-red-100 border border-red-200 text-xs font-bold px-2.5 py-1 rounded-lg transition">
+                            🗑️ ล้างนักกีฬา
+                        </button>
                     </div>
-                    <div class="grid grid-cols-5 gap-2">
-                        <input type="text" id="set1" placeholder="เซต 1" class="p-2 border border-slate-300 rounded-lg text-center text-xs focus:outline-none focus:border-orange-500">
-                        <input type="text" id="set2" placeholder="เซต 2" class="p-2 border border-slate-300 rounded-lg text-center text-xs focus:outline-none focus:border-orange-500">
-                        <input type="text" id="set3" placeholder="เซต 3" class="p-2 border border-slate-300 rounded-lg text-center text-xs focus:outline-none focus:border-orange-500">
-                        <input type="text" id="set4" placeholder="เซต 4" class="p-2 border border-slate-300 rounded-lg text-center text-xs focus:outline-none focus:border-orange-500">
-                        <input type="text" id="set5" placeholder="เซต 5" class="p-2 border border-slate-300 rounded-lg text-center text-xs focus:outline-none focus:border-orange-500">
+
+                    <form onsubmit="handleAddPlayer(event)" class="space-y-3">
+                        <input id="player-name" type="text" placeholder="ชื่อ-นามสกุล" required class="w-full px-3 py-2 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-orange-500 bg-slate-50/50">
+                        <input id="player-club" type="text" placeholder="สังกัด / ทีม" class="w-full px-3 py-2 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-orange-500 bg-slate-50/50">
+                        <button type="submit" class="w-full bg-custom-orange hover:bg-orange-700 text-white font-bold py-2.5 rounded-xl text-sm transition shadow-sm">
+                            บันทึกข้อมูล
+                        </button>
+                    </form>
+
+                    <div class="mt-4 pt-4 border-t border-slate-100">
+                        <ul id="players-list" class="space-y-2 max-h-48 overflow-y-auto text-sm">
+                            <li class="text-slate-400 text-xs text-center py-2">ไม่มีข้อมูลนักกีฬา</li>
+                        </ul>
                     </div>
-                    <button type="submit" class="w-full bg-emerald-600 text-white py-2 rounded-lg text-sm font-medium hover:bg-emerald-700 transition">บันทึกผลแมตช์</button>
-                </form>
-
-                <div class="flex justify-between items-center mb-2">
-                    <h3 class="font-bold text-sm text-slate-700">ประวัติการแข่งขัน</h3>
-                    <!-- ปุ่ม Clear สำหรับล้างประวัติการแข่ง -->
-                    <button onclick="clearAllMatches()" class="bg-red-50 hover:bg-red-100 text-red-600 text-xs px-2.5 py-1 rounded-lg border border-red-200 transition flex items-center font-medium">
-                        <i class="fa-solid fa-trash-can mr-1"></i> ล้างประวัติแข่ง
-                    </button>
                 </div>
+            </div>
 
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left text-sm border-collapse">
-                        <thead>
-                            <tr class="bg-orange-50 text-orange-950 text-xs">
-                                <th class="p-2 text-center w-12">คู่ที่</th>
-                                <th class="p-2">คู่แข่งขัน</th>
-                                <th class="p-2 text-center">คะแนนแต่ละเซต</th>
-                                <th class="p-2 text-center">ผลเซตรวม</th>
-                                <th class="p-2 text-center">ผู้ชนะ</th>
-                                <th class="p-2 text-center">ลบ</th>
-                            </tr>
-                        </thead>
-                        <tbody id="matchesTable" class="divide-y divide-slate-100"></tbody>
-                    </table>
+            <!-- Right Box: Record Match & History -->
+            <div class="lg:col-span-8 space-y-6">
+                <!-- Record Match -->
+                <div class="bg-white rounded-2xl shadow-sm p-5 border border-slate-100">
+                    <div class="flex items-center text-slate-800 font-extrabold text-base mb-4">
+                        <span class="text-orange-500 mr-2 text-lg">➕</span>
+                        <span>บันทึกผลการแข่งขัน</span>
+                    </div>
+
+                    <form onsubmit="handleAddMatch(event)" class="space-y-4">
+                        <div class="grid grid-cols-2 gap-3">
+                            <select id="p1-select" required class="w-full px-3 py-2 border border-slate-200 rounded-xl text-sm bg-slate-50/50 focus:outline-none focus:ring-2 focus:ring-orange-500">
+                                <option value="">เลือกนักกีฬา A</option>
+                            </select>
+                            <select id="p2-select" required class="w-full px-3 py-2 border border-slate-200 rounded-xl text-sm bg-slate-50/50 focus:outline-none focus:ring-2 focus:ring-orange-500">
+                                <option value="">เลือกนักกีฬา B</option>
+                            </select>
+                        </div>
+
+                        <div class="grid grid-cols-5 gap-2">
+                            <input id="set1" type="text" placeholder="เซต 1" class="w-full text-center px-2 py-2 border border-slate-200 rounded-xl text-sm bg-slate-50/50 focus:ring-2 focus:ring-orange-500 outline-none">
+                            <input id="set2" type="text" placeholder="เซต 2" class="w-full text-center px-2 py-2 border border-slate-200 rounded-xl text-sm bg-slate-50/50 focus:ring-2 focus:ring-orange-500 outline-none">
+                            <input id="set3" type="text" placeholder="เซต 3" class="w-full text-center px-2 py-2 border border-slate-200 rounded-xl text-sm bg-slate-50/50 focus:ring-2 focus:ring-orange-500 outline-none">
+                            <input id="set4" type="text" placeholder="เซต 4" class="w-full text-center px-2 py-2 border border-slate-200 rounded-xl text-sm bg-slate-50/50 focus:ring-2 focus:ring-orange-500 outline-none">
+                            <input id="set5" type="text" placeholder="เซต 5" class="w-full text-center px-2 py-2 border border-slate-200 rounded-xl text-sm bg-slate-50/50 focus:ring-2 focus:ring-orange-500 outline-none">
+                        </div>
+
+                        <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 rounded-xl text-sm transition shadow-sm">
+                            บันทึกผลแมตช์
+                        </button>
+                    </form>
+
+                    <!-- History Table -->
+                    <div class="mt-6 pt-4 border-t border-slate-100">
+                        <div class="flex justify-between items-center mb-3">
+                            <span class="font-extrabold text-slate-800 text-sm">ประวัติการแข่งขัน</span>
+                            <button onclick="clearMatches()" class="bg-red-50 text-red-500 hover:bg-red-100 border border-red-200 text-xs font-bold px-2 py-1 rounded-lg transition">
+                                🗑️ ล้างประวัติแข่ง
+                            </button>
+                        </div>
+
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-center text-sm border-collapse">
+                                <thead>
+                                    <tr class="bg-history-header text-amber-900 text-xs font-bold">
+                                        <th class="py-2.5 px-2">คู่ที่</th>
+                                        <th class="py-2.5 px-3 text-left">คู่แข่งขัน</th>
+                                        <th class="py-2.5 px-2">ผลเซตรวม</th>
+                                        <th class="py-2.5 px-2">ผู้ชนะ</th>
+                                        <th class="py-2.5 px-2">ลบ</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="matches-table-body" class="divide-y divide-slate-100">
+                                    <tr><td colspan="5" class="py-4 text-slate-400 text-xs">ไม่มีประวัติการแข่ง</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
                 </div>
-            </section>
+            </div>
+
         </div>
     </main>
 
-    <!-- มินิเกมเดาะปิงปอง -->
-    <div class="fixed bottom-5 right-5 bg-white/95 backdrop-blur rounded-2xl shadow-xl p-3 border border-orange-300 z-50 text-center w-36">
-        <div class="text-[11px] font-bold text-orange-600 mb-1 flex items-center justify-center">
-            <i class="fa-solid fa-gamepad mr-1"></i> เดาะปิงปอง!
+    <!-- Floating Mini-Game Widget (มินิเกมเคาะปิงปอง) -->
+    <div class="fixed bottom-4 right-4 bg-white rounded-2xl shadow-xl p-3 border border-orange-100 text-center w-36 select-none z-40">
+        <div class="text-xs font-extrabold text-slate-700 mb-1 flex items-center justify-center">
+            <span class="text-orange-500 mr-1">🏓</span> เดาะปิงปอง!
         </div>
-        <div id="pingpongBall" onclick="bounceGame()" class="w-12 h-12 mx-auto bg-gradient-to-tr from-amber-400 to-orange-500 rounded-full flex items-center justify-center text-white text-xl shadow-md cursor-pointer transform hover:scale-110 active:scale-95 transition select-none my-1">
+        <button id="pingpong-ball-btn" onclick="playPingPong()" class="w-12 h-12 bg-amber-500 hover:bg-amber-600 active:scale-90 rounded-full mx-auto my-1 flex items-center justify-center text-white text-xl shadow transition-all duration-150">
             🏓
-        </div>
-        <div class="text-xs font-semibold text-slate-700 mt-1">
-            Combo: <span id="comboCount" class="text-orange-600 font-bold">0</span>
+        </button>
+        <div class="text-xs font-bold text-slate-600 mt-1">
+            Combo: <span id="combo-count" class="text-orange-600 font-extrabold">0</span>
         </div>
         <div class="text-[10px] text-slate-400">
-            สูงสุด: <span id="highScore">0</span>
+            สูงสุด: <span id="max-combo">0</span>
         </div>
     </div>
 
+    <!-- Script Logic -->
     <script>
-        // --- 1. ระบบ เอฟเฟกต์คลิก + เสียง pop ---
-        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        let playersMap = {};
 
-        function playPopSound() {
+        // --- 1. ระบบเอ็ฟเฟคคลิกเมาส์ + เสียง + ขยายขนาดใหญ่ขึ้น ---
+        document.addEventListener('click', (e) => {
+            // ไม่สร้างเอ็ฟเฟคหากกดบน input หรือ select เพื่อไม่ให้รบกวนการพิมพ์
+            if (['INPUT', 'SELECT', 'OPTION'].includes(e.target.tagName)) return;
+
+            // สร้างเสียง Pop เมื่อคลิก
             try {
-                if (audioCtx.state === 'suspended') {
-                    audioCtx.resume();
-                }
-                const osc = audioCtx.createOscillator();
-                const gain = audioCtx.createGain();
+                const ctx = new (window.AudioContext || window.webkitAudioContext)();
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                
                 osc.type = 'sine';
-                osc.frequency.setValueAtTime(400 + Math.random() * 400, audioCtx.currentTime);
-                osc.frequency.exponentialRampToValueAtTime(800 + Math.random() * 400, audioCtx.currentTime + 0.08);
-                gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
-                gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.08);
+                osc.frequency.setValueAtTime(800, ctx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(250, ctx.currentTime + 0.06);
+                
+                gain.gain.setValueAtTime(0.15, ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.06);
+                
                 osc.connect(gain);
-                gain.connect(audioCtx.destination);
+                gain.connect(ctx.destination);
+                
                 osc.start();
-                osc.stop(audioCtx.currentTime + 0.08);
-            } catch(e) {}
-        }
+                osc.stop(ctx.currentTime + 0.06);
+            } catch(err) {}
 
-        document.addEventListener('click', function(e) {
-            playPopSound();
-
-            const items = ['🏓', '💥', '⭐', '🔥', '✨', '🏆', '🍊'];
-            const randomItem = items[Math.floor(Math.random() * items.length)];
-
+            // สร้างไอคอนลอยขยายใหญ่ (ขนาด text-3xl และสเกลพุ่งเป็น 2 เท่า)
             const particle = document.createElement('div');
-            particle.className = 'click-particle';
-            particle.innerText = randomItem;
-            particle.style.left = `${e.clientX}px`;
-            particle.style.top = `${e.clientY}px`;
+            particle.className = 'fixed pointer-events-none text-3xl select-none z-50';
+            const icons = ['🏓', '⚪', '🔥', '✨', '💥', '🏆'];
+            particle.textContent = icons[Math.floor(Math.random() * icons.length)];
+            particle.style.left = `${e.clientX - 16}px`;
+            particle.style.top = `${e.clientY - 16}px`;
+            particle.style.transition = 'all 0.6s cubic-bezier(0.18, 0.89, 0.32, 1.28)';
             document.body.appendChild(particle);
 
             setTimeout(() => {
-                particle.remove();
-            }, 700);
+                const randomX = (Math.random() - 0.5) * 100;
+                particle.style.transform = `translate(${randomX}px, -90px) scale(2.0) rotate(${randomX * 2.5}deg)`;
+                particle.style.opacity = '0';
+            }, 10);
+
+            setTimeout(() => { particle.remove(); }, 600);
         });
 
-        // --- 2. มินิเกมเดาะปิงปอง ---
-        let combo = 0;
-        let highScore = localStorage.getItem('pingpong_high_score') || 0;
-        document.getElementById('highScore').innerText = highScore;
-
-        function bounceGame() {
-            combo++;
-            document.getElementById('comboCount').innerText = combo;
-
-            const ball = document.getElementById('pingpongBall');
-            ball.classList.remove('animate-bounce-once');
-            void ball.offsetWidth;
-            ball.classList.add('animate-bounce-once');
-
-            if (combo > highScore) {
-                highScore = combo;
-                localStorage.setItem('pingpong_high_score', highScore);
-                document.getElementById('highScore').innerText = highScore;
-            }
-        }
-
-        // --- 3. ฟังก์ชันล้างข้อมูลแบบแยกส่วน ---
-        async function clearAllPlayers() {
-            if (confirm('⚠️ คุณแน่ใจหรือไม่ว่าต้องการลบรายชื่อนักกีฬาทั้งหมด?\n\n(การลบรายชื่อนักกีฬาจะลบประวัติการแข่งขันทั้งหมดไปด้วยเพื่อป้องกันข้อมูลค้าง)')) {
-                try {
-                    const res = await fetch('/api/clear-players', { method: 'DELETE' });
-                    if (res.ok) {
-                        loadAll();
-                    } else {
-                        alert('เกิดข้อผิดพลาดในการลบข้อมูลนักกีฬา');
-                    }
-                } catch (e) {
-                    alert('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้');
-                }
-            }
-        }
-
-        async function clearAllMatches() {
-            if (confirm('⚠️ คุณแน่ใจหรือไม่ว่าต้องการลบประวัติการแข่งขันทั้งหมด?')) {
-                try {
-                    const res = await fetch('/api/clear-matches', { method: 'DELETE' });
-                    if (res.ok) {
-                        loadAll();
-                    } else {
-                        alert('เกิดข้อผิดพลาดในการลบประวัติการแข่งขัน');
-                    }
-                } catch (e) {
-                    alert('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้');
-                }
-            }
-        }
-
-        // --- 4. ระบบสุ่มคำคมแก้เครียด ---
+        // --- 2. ระบบสุ่มคำคมปิงปอง ---
         const quotes = [
             '"ตบไม่ลง ให้หยอด ตบแล้วหลุด ให้ยิ้มไว้ก่อน!"',
-            '"ปิงปองก็เหมือนชีวิต ถึงจะตีพลาด แต่ลูกต่อไปเราเริ่มใหม่ได้เสมอ."',
-            '"ลูกสปินเร็วแค่ไหน ก็ไม่ไวเท่าความเร็วของใจที่อยากชนะ."',
-            '"ไม้ปิงปองราคาหลักพัน ฝีมือระดับหลักร้อย แต่ใจเกินร้อย!"',
-            '"ซ้อมหนักไม่เคยฆ่าใคร แต่ทำให้ opponent ร้องไห้ได้แน่นอน 🏓"'
+            '"ลูกปิงปองมันเบา แต่ความตั้งใจเรามันหนัก!"',
+            '"อย่าเพิ่งยอมแพ้ จนกว่าลูกจะตกพื้น"',
+            '"ซ้อมให้หนัก ตบให้คม ยิ้มให้กว้าง!"',
+            '"ปิงปองไม่ใช่แค่กีฬา แต่มันคือวิถีชีวิต!"',
+            '"เสิร์ฟพิฆาต หยอดนิ่มนวล ตบสวนเต็มแรง!"',
+            '"แต้มนำอย่าประมาท แต้มตามอย่าถอดใจ!"'
         ];
 
         function randomQuote() {
-            const quoteText = document.getElementById('quoteText');
-            const randomIndex = Math.floor(Math.random() * quotes.length);
-            quoteText.innerText = quotes[randomIndex];
+            const el = document.getElementById("quote-text");
+            el.style.opacity = "0";
+            setTimeout(() => {
+                const q = quotes[Math.floor(Math.random() * quotes.length)];
+                el.textContent = q;
+                el.style.opacity = "1";
+            }, 150);
         }
 
-        // --- 5. โหลดและจัดการข้อมูลตาราง ---
-        async function loadAll() {
-            await Promise.all([loadPlayers(), loadStandings(), loadMatches()]);
+        // --- 3. ระบบมินิเกมเคาะปิงปอง ---
+        let combo = 0;
+        let comboTimer = null;
+        let maxCombo = parseInt(localStorage.getItem("pingpong_max_combo") || "0");
+
+        document.addEventListener("DOMContentLoaded", () => {
+            document.getElementById("max-combo").textContent = maxCombo;
+        });
+
+        function playPingPong() {
+            combo++;
+            document.getElementById("combo-count").textContent = combo;
+
+            if (combo > maxCombo) {
+                maxCombo = combo;
+                localStorage.setItem("pingpong_max_combo", maxCombo);
+                document.getElementById("max-combo").textContent = maxCombo;
+            }
+
+            // Animation เด้งลูก
+            const btn = document.getElementById("pingpong-ball-btn");
+            btn.classList.remove("animate-pingpong");
+            void btn.offsetWidth;
+            btn.classList.add("animate-pingpong");
+
+            // รีเซ็ต Combo หากไม่ได้เคาะต่อใน 2.5 วินาที
+            clearTimeout(comboTimer);
+            comboTimer = setTimeout(() => {
+                combo = 0;
+                document.getElementById("combo-count").textContent = "0";
+            }, 2500);
+        }
+
+        // --- 4. ระบบจัดการ API และ Workspace ---
+        function getHeaders() {
+            const ws = localStorage.getItem("workspace_id") || "101";
+            return {
+                "Content-Type": "application/json",
+                "X-Workspace-ID": ws
+            };
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            let ws = localStorage.getItem("workspace_id");
+            if (!ws) {
+                ws = "101";
+                localStorage.setItem("workspace_id", ws);
+            }
+            document.getElementById("current-workspace-name").textContent = ws;
+            loadAllData();
+        });
+
+        function switchWorkspace() {
+            const current = localStorage.getItem("workspace_id") || "101";
+            const newWs = prompt("กรอกรหัสสำเนาห้องที่ต้องการใช้งาน (หรือพิมพ์ชื่อใหม่เพื่อสร้างห้อง):", current);
+            if (newWs && newWs.trim() !== "") {
+                localStorage.setItem("workspace_id", newWs.trim());
+                location.reload();
+            }
+        }
+
+        function loadAllData() {
+            loadPlayers();
+            loadStandings();
+            loadMatches();
         }
 
         async function loadPlayers() {
-            const playerASelect = document.getElementById('matchPlayerA');
-            const playerBSelect = document.getElementById('matchPlayerB');
-            const selectedA = playerASelect.value;
-            const selectedB = playerBSelect.value;
+            try {
+                const res = await fetch("/api/players", { headers: getHeaders() });
+                const data = await res.json();
+                playersMap = {};
 
-            const res = await fetch('/api/players');
-            const data = await res.json();
+                const p1Sel = document.getElementById("p1-select");
+                const p2Sel = document.getElementById("p2-select");
+                const listEl = document.getElementById("players-list");
 
-            document.getElementById('playersList').innerHTML = data.map(p => `
-                <div class="flex justify-between items-center py-2 text-sm">
-                    <div><b>${p.name}</b> <span class="text-xs text-slate-500">(${p.team})</span></div>
-                    <button onclick="deletePlayer(${p.id})" class="text-red-500 hover:text-red-700"><i class="fa-solid fa-trash"></i></button>
-                </div>
-            `).join('');
+                p1Sel.innerHTML = '<option value="">เลือกนักกีฬา A</option>';
+                p2Sel.innerHTML = '<option value="">เลือกนักกีฬา B</option>';
+                listEl.innerHTML = "";
 
-            const options = data.map(p => `<option value="${p.id}">${p.name}</option>`).join('');
-            playerASelect.innerHTML = options;
-            playerBSelect.innerHTML = options;
+                if (!data || data.length === 0) {
+                    listEl.innerHTML = '<li class="text-slate-400 text-xs text-center py-2">ไม่มีข้อมูลนักกีฬา</li>';
+                    return;
+                }
 
-            if (selectedA && [...playerASelect.options].some(opt => opt.value === selectedA)) {
-                playerASelect.value = selectedA;
-            }
-            if (selectedB && [...playerBSelect.options].some(opt => opt.value === selectedB)) {
-                playerBSelect.value = selectedB;
+                data.forEach(p => {
+                    playersMap[p.id] = p.name;
+                    p1Sel.innerHTML += `<option value="${p.id}">${p.name} (${p.club || '-'})</option>`;
+                    p2Sel.innerHTML += `<option value="${p.id}">${p.name} (${p.club || '-'})</option>`;
+
+                    listEl.innerHTML += `
+                        <li class="flex justify-between items-center bg-slate-50 p-2 rounded-xl border border-slate-100">
+                            <div>
+                                <span class="font-bold text-slate-700 text-xs">${p.name}</span>
+                                <span class="text-[10px] text-slate-400 ml-1">(${p.club || '-'})</span>
+                            </div>
+                            <button onclick="deletePlayer(${p.id})" class="text-red-400 hover:text-red-600 text-xs px-1">
+                                ✖
+                            </button>
+                        </li>
+                    `;
+                });
+            } catch (e) {
+                console.error("Error loading players:", e);
             }
         }
 
         async function loadStandings() {
-            const res = await fetch('/api/standings');
-            const data = await res.json();
-            document.getElementById('standingsTable').innerHTML = data.map(s => `
-                <tr class="hover:bg-orange-50/50 transition">
-                    <td class="p-3 text-center font-bold">${s.rank}</td>
-                    <td class="p-3 font-semibold">${s.name}</td>
-                    <td class="p-3 text-slate-500">${s.team}</td>
-                    <td class="p-3 text-center">${s.played}</td>
-                    <td class="p-3 text-center text-emerald-600 font-bold">${s.won}</td>
-                    <td class="p-3 text-center text-red-500">${s.lost}</td>
-                    <td class="p-3 text-center">${s.sets_won}</td>
-                    <td class="p-3 text-center">${s.sets_lost}</td>
-                    <td class="p-3 text-center">${s.set_diff}</td>
-                    <td class="p-3 text-center font-bold text-orange-900 bg-orange-50">${s.points}</td>
-                </tr>
-            `).join('');
+            try {
+                const res = await fetch("/api/standings", { headers: getHeaders() });
+                const data = await res.json();
+                const tbody = document.getElementById("standings-table-body");
+                tbody.innerHTML = "";
+
+                if (!data || data.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="10" class="py-6 text-slate-400">ยังไม่มีข้อมูลคะแนน</td></tr>';
+                    return;
+                }
+
+                data.forEach(s => {
+                    tbody.innerHTML += `
+                        <tr class="hover:bg-amber-50/30 transition">
+                            <td class="py-3 px-3 font-extrabold text-orange-600">${s.rank}</td>
+                            <td class="py-3 px-4 text-left font-bold text-slate-800">${s.name}</td>
+                            <td class="py-3 px-3 text-slate-500 text-xs">${s.club || '-'}</td>
+                            <td class="py-3 px-3">${s.played}</td>
+                            <td class="py-3 px-3 text-emerald-600 font-bold">${s.won}</td>
+                            <td class="py-3 px-3 text-red-500">${s.lost}</td>
+                            <td class="py-3 px-3 text-slate-600">${s.sets_won}</td>
+                            <td class="py-3 px-3 text-slate-600">${s.sets_lost}</td>
+                            <td class="py-3 px-3 font-bold">${s.set_diff > 0 ? '+' + s.set_diff : s.set_diff}</td>
+                            <td class="py-3 px-3 font-extrabold text-slate-900 bg-orange-50/50">${s.pts}</td>
+                        </tr>
+                    `;
+                });
+            } catch (e) {
+                console.error("Error loading standings:", e);
+            }
         }
 
         async function loadMatches() {
-            const res = await fetch('/api/matches');
-            const data = await res.json();
-            document.getElementById('matchesTable').innerHTML = data.map((m, index) => `
-                <tr class="hover:bg-slate-50 transition">
-                    <td class="p-2 text-center font-semibold text-slate-500">${index + 1}</td>
-                    <td class="p-2">${m.player_a_name} vs ${m.player_b_name}</td>
-                    <td class="p-2 text-center text-xs font-mono text-slate-600">${m.sets_detail}</td>
-                    <td class="p-2 text-center font-bold">${m.score_sets}</td>
-                    <td class="p-2 text-center text-emerald-600 font-semibold">${m.winner}</td>
-                    <td class="p-2 text-center"><button onclick="deleteMatch(${m.id})" class="text-red-500 hover:text-red-700"><i class="fa-solid fa-trash"></i></button></td>
-                </tr>
-            `).join('');
+            try {
+                const res = await fetch("/api/matches", { headers: getHeaders() });
+                const data = await res.json();
+                const tbody = document.getElementById("matches-table-body");
+                tbody.innerHTML = "";
+
+                if (!data || data.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="5" class="py-4 text-slate-400 text-xs">ไม่มีประวัติการแข่ง</td></tr>';
+                    return;
+                }
+
+                data.forEach((m, idx) => {
+                    const p1Name = playersMap[m.player1_id] || "นักกีฬา";
+                    const p2Name = playersMap[m.player2_id] || "นักกีฬา";
+                    const winnerName = playersMap[m.winner_id] || "-";
+
+                    tbody.innerHTML += `
+                        <tr class="hover:bg-slate-50 transition">
+                            <td class="py-2.5 px-2 text-slate-400 text-xs">${idx + 1}</td>
+                            <td class="py-2.5 px-3 text-left font-bold text-slate-700">${p1Name} <span class="text-xs text-slate-400 font-normal">vs</span> ${p2Name}</td>
+                            <td class="py-2.5 px-2 font-extrabold text-orange-600">${m.p1_score} - ${m.p2_score}</td>
+                            <td class="py-2.5 px-2 text-emerald-600 font-bold text-xs">${winnerName}</td>
+                            <td class="py-2.5 px-2">
+                                <button onclick="deleteMatch(${m.id})" class="text-slate-300 hover:text-red-500 transition">
+                                    <i class="fa-solid fa-trash-can text-xs"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    `;
+                });
+            } catch (e) {
+                console.error("Error loading matches:", e);
+            }
         }
 
-        document.getElementById('playerForm').onsubmit = async (e) => {
+        async function handleAddPlayer(e) {
             e.preventDefault();
-            await fetch('/api/players', {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
+            const nameEl = document.getElementById("player-name");
+            const clubEl = document.getElementById("player-club");
+
+            const name = nameEl.value.trim();
+            const club = clubEl.value.trim();
+
+            if (!name) {
+                alert("กรุณากรอกชื่อนักกีฬา");
+                return;
+            }
+
+            try {
+                const res = await fetch("/api/players", {
+                    method: "POST",
+                    headers: getHeaders(),
+                    body: JSON.stringify({ name: name, club: club })
+                });
+
+                if (res.ok) {
+                    nameEl.value = "";
+                    clubEl.value = "";
+                    loadAllData();
+                } else {
+                    const err = await res.json();
+                    alert("เกิดข้อผิดพลาด: " + (err.detail || "ไม่สามารถบันทึกได้"));
+                }
+            } catch (err) {
+                console.error("Error adding player:", err);
+                alert("เกิดข้อผิดพลาดในการเชื่อมต่อเซิร์ฟเวอร์");
+            }
+        }
+
+        async function handleAddMatch(e) {
+            e.preventDefault();
+            const p1 = document.getElementById("p1-select").value;
+            const p2 = document.getElementById("p2-select").value;
+
+            if (!p1 || !p2) return alert("กรุณาเลือกนักกีฬาทั้งสองคน");
+            if (p1 === p2) return alert("เลือกนักกีฬาซ้ำกันไม่ได้");
+
+            let p1Score = 0;
+            let p2Score = 0;
+            const setIds = ["set1", "set2", "set3", "set4", "set5"];
+
+            setIds.forEach(id => {
+                const val = document.getElementById(id).value.trim();
+                if (val && val.includes("-")) {
+                    const parts = val.split("-");
+                    const s1 = parseInt(parts[0]);
+                    const s2 = parseInt(parts[1]);
+                    if (!isNaN(s1) && !isNaN(s2)) {
+                        if (s1 > s2) p1Score++;
+                        else if (s2 > s1) p2Score++;
+                    }
+                }
+            });
+
+            const res = await fetch("/api/matches", {
+                method: "POST",
+                headers: getHeaders(),
                 body: JSON.stringify({
-                    name: document.getElementById('playerName').value,
-                    team: document.getElementById('playerTeam').value
+                    player1_id: parseInt(p1),
+                    player2_id: parseInt(p2),
+                    p1_score: p1Score,
+                    p2_score: p2Score
                 })
             });
-            document.getElementById('playerName').value = '';
-            document.getElementById('playerTeam').value = '';
-            loadAll();
-        };
 
-        document.getElementById('matchForm').onsubmit = async (e) => {
-            e.preventDefault();
-            await fetch('/api/matches', {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({
-                    player_a_id: parseInt(document.getElementById('matchPlayerA').value),
-                    player_b_id: parseInt(document.getElementById('matchPlayerB').value),
-                    set1: document.getElementById('set1').value || '-',
-                    set2: document.getElementById('set2').value || '-',
-                    set3: document.getElementById('set3').value || '-',
-                    set4: document.getElementById('set4').value || '-',
-                    set5: document.getElementById('set5').value || '-'
-                })
-            });
-            
-            // พลุฉลองเมื่อบันทึกการแข่ง
-            confetti({
-                particleCount: 80,
-                spread: 70,
-                origin: { y: 0.6 }
-            });
-
-            loadAll();
-        };
+            if (res.ok) {
+                setIds.forEach(id => document.getElementById(id).value = "");
+                loadAllData();
+            } else {
+                alert("เกิดข้อผิดพลาดในการบันทึกผลแมตช์");
+            }
+        }
 
         async function deletePlayer(id) {
-            if(confirm('ยืนยันลบ?')) { await fetch(`/api/players/${id}`, {method: 'DELETE'}); loadAll(); }
-        }
-        async function deleteMatch(id) {
-            if(confirm('ยืนยันลบ?')) { await fetch(`/api/matches/${id}`, {method: 'DELETE'}); loadAll(); }
+            if (!confirm("ลบนักกีฬานี้?")) return;
+            await fetch(`/api/players/${id}`, { method: "DELETE", headers: getHeaders() });
+            loadAllData();
         }
 
-        window.onload = loadAll;
+        async function deleteMatch(id) {
+            if (!confirm("ลบประวัติการแข่งขันนี้?")) return;
+            await fetch(`/api/matches/${id}`, { method: "DELETE", headers: getHeaders() });
+            loadAllData();
+        }
+
+        async function clearPlayers() {
+            if (!confirm("ยืนยันล้างข้อมูลนักกีฬาเฉพาะห้องนี้ทั้งหมด?")) return;
+            await fetch("/api/clear-players", { method: "DELETE", headers: getHeaders() });
+            loadAllData();
+        }
+
+        async function clearMatches() {
+            if (!confirm("ยืนยันล้างประวัติการแข่งเฉพาะห้องนี้ทั้งหมด?")) return;
+            await fetch("/api/clear-matches", { method: "DELETE", headers: getHeaders() });
+            loadAllData();
+        }
+
+        async function downloadExcel() {
+            const ws = localStorage.getItem("workspace_id") || "101";
+            const res = await fetch("/api/export-excel", { headers: getHeaders() });
+            if (!res.ok) return alert("ไม่สามารถดาวน์โหลดไฟล์ได้");
+            const blob = await res.blob();
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = `สรุปผลปิงปอง_${ws}.xlsx`;
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+        }
     </script>
 </body>
 </html>
