@@ -4,182 +4,254 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>KMITL TABLE TENNIS CLUB</title>
+    <!-- Google Fonts: Kanit -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Tailwind CSS & FontAwesome -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
     <style>
-        body { background-color: #f1f5f9; }
-        .bg-custom-orange { background-color: #ea580c; }
-        .bg-custom-dark-orange { background-color: #c2410c; }
-        .bg-table-header { background-color: #f97316; }
-        .bg-history-header { background-color: #fef3c7; }
-        
-        /* Animation สำหรับมินิเกมและคำคม */
+        body {
+            font-family: 'Kanit', sans-serif;
+            background: linear-gradient(135deg, #fef8f6 0%, #f1f5f9 100%);
+        }
+        .orange-gradient {
+            background: linear-gradient(135deg, #f97316 0%, #ea580c 50%, #c2410c 100%);
+        }
+        .orange-gradient-soft {
+            background: linear-gradient(135deg, #ffedd5 0%, #fed7aa 100%);
+        }
+        .orange-glow {
+            box-shadow: 0 10px 25px -5px rgba(234, 88, 12, 0.3);
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+        }
         @keyframes pingpong-bounce {
             0%, 100% { transform: translateY(0) rotate(0deg); }
-            50% { transform: translateY(-18px) rotate(15deg); }
+            50% { transform: translateY(-20px) rotate(20deg) scale(1.1); }
         }
         .animate-pingpong { animation: pingpong-bounce 0.25s ease-in-out; }
-        .transition-opacity-300 { transition: opacity 0.3s ease; }
+        .transition-all-300 { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
     </style>
 </head>
-<body class="min-h-screen font-sans text-slate-800 relative pb-16">
+<body class="min-h-screen text-slate-800 relative pb-20 selection:bg-orange-500 selection:text-white">
 
-    <!-- Header -->
-    <header class="bg-custom-orange text-white shadow-md">
-        <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
-            <div class="flex items-center space-x-3">
-                <div class="w-12 h-12 bg-white rounded-full flex items-center justify-center p-1 shadow">
-                    <img src="/static/logo.jpg" alt="Logo" class="w-full h-full object-contain rounded-full" onerror="this.onerror=null; this.src='https://cdn-icons-png.flaticon.com/5xl/3135/3135715.png';">
+    <!-- Navbar / Header -->
+    <header class="orange-gradient text-white shadow-xl relative overflow-hidden">
+        <!-- Background Decorative Elements -->
+        <div class="absolute -right-10 -bottom-10 w-60 h-60 bg-white/10 rounded-full blur-2xl pointer-events-none"></div>
+        <div class="absolute left-1/3 -top-10 w-40 h-40 bg-amber-400/20 rounded-full blur-xl pointer-events-none"></div>
+
+        <div class="max-w-7xl mx-auto px-6 py-5 flex flex-col md:flex-row justify-between items-center gap-4 relative z-10">
+            <!-- Brand & Logo -->
+            <div class="flex items-center space-x-4">
+                <div class="relative group">
+                    <div class="absolute -inset-1 bg-gradient-to-r from-amber-300 to-orange-200 rounded-full blur opacity-75 group-hover:opacity-100 transition duration-300"></div>
+                    <div class="relative w-16 h-16 md:w-20 md:h-20 bg-white rounded-full flex items-center justify-center p-1.5 shadow-xl">
+                        <img src="/static/logo.jpg" alt="Logo" class="w-full h-full object-contain rounded-full" onerror="this.onerror=null; this.src='https://cdn-icons-png.flaticon.com/5xl/3135/3135715.png';">
+                    </div>
                 </div>
-                <h1 class="text-2xl font-black tracking-wide">KMITL TABLE TENNIS CLUB 🏓</h1>
+                <div>
+                    <h1 class="text-2xl md:text-4xl font-extrabold tracking-tight drop-shadow-md flex items-center gap-2">
+                        <span>KMITL TABLE TENNIS CLUB</span>
+                        <span class="animate-pulse">🏓</span>
+                    </h1>
+                    <p class="text-orange-100 text-xs md:text-sm font-light mt-0.5 opacity-90">ระบบจัดการการแข่งขันปิงปอง สถาบันเทคโนโลยีพระจอมเกล้าเจ้าคุณทหารลาดกระบัง</p>
+                </div>
             </div>
+
+            <!-- Action Buttons -->
             <div class="flex items-center space-x-3">
-                <button onclick="downloadExcel()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-4 py-2 rounded-lg text-sm transition shadow flex items-center">
-                    <i class="fa-solid fa-file-excel mr-2"></i> ดาวน์โหลด Excel (.xlsx)
+                <button onclick="downloadExcel()" class="bg-emerald-500 hover:bg-emerald-600 active:scale-95 text-white font-semibold px-4 py-2.5 rounded-xl text-sm transition-all-300 shadow-lg shadow-emerald-900/20 flex items-center border border-emerald-400/30">
+                    <i class="fa-solid fa-file-excel text-base mr-2"></i> ดาวน์โหลด Excel (.xlsx)
                 </button>
-                <a href="/logout" class="bg-red-500 hover:bg-red-600 text-white font-bold px-4 py-2 rounded-lg text-sm transition shadow flex items-center">
-                    <i class="fa-solid fa-right-from-bracket mr-2"></i> ออกจากระบบ
+                <a href="/logout" class="bg-rose-500/90 hover:bg-rose-600 active:scale-95 text-white font-semibold px-4 py-2.5 rounded-xl text-sm transition-all-300 shadow-lg shadow-rose-900/20 flex items-center border border-rose-400/30">
+                    <i class="fa-solid fa-right-from-bracket text-base mr-2"></i> ออกจากระบบ
                 </a>
             </div>
         </div>
         
         <!-- Workspace Bar -->
-        <div class="bg-custom-dark-orange px-6 py-2 text-sm text-white flex items-center space-x-3 max-w-7xl mx-auto">
-            <span class="font-bold">ห้อง: <span id="current-workspace-name" class="underline">101</span></span>
-            <button onclick="switchWorkspace()" class="bg-white text-orange-800 font-bold px-3 py-0.5 rounded text-xs hover:bg-orange-100 transition shadow-sm">
-                เปลี่ยน / สร้างห้อง
-            </button>
+        <div class="bg-black/20 backdrop-blur-md px-6 py-2.5 text-sm text-white border-t border-white/10">
+            <div class="max-w-7xl mx-auto flex items-center justify-between">
+                <div class="flex items-center space-x-2">
+                    <i class="fa-solid fa-door-open text-amber-300"></i>
+                    <span>ห้องใช้งานปัจจุบัน: <strong id="current-workspace-name" class="bg-white/20 px-2.5 py-0.5 rounded-md font-bold tracking-wide text-amber-200">101</strong></span>
+                </div>
+                <button onclick="switchWorkspace()" class="bg-white/90 hover:bg-white text-orange-900 font-bold px-3 py-1 rounded-lg text-xs transition-all-300 shadow-sm active:scale-95 flex items-center gap-1.5">
+                    <i class="fa-solid fa-arrow-rotate-right text-[10px]"></i> เปลี่ยน / สร้างห้อง
+                </button>
+            </div>
         </div>
     </header>
 
-    <main class="max-w-7xl mx-auto px-6 py-6 space-y-6">
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 md:px-6 py-8 space-y-8">
 
-        <!-- Quote Card (สุ่มคำคม) -->
-        <div class="bg-gradient-to-r from-amber-500 to-orange-400 text-white p-4 rounded-xl shadow-sm flex items-center justify-between">
-            <div class="flex items-center space-x-3 font-semibold text-base">
-                <span class="text-xl">💡</span>
-                <span id="quote-text" class="transition-opacity-300">"ตบไม่ลง ให้หยอด ตบแล้วหลุด ให้ยิ้มไว้ก่อน!"</span>
+        <!-- Quote Card (คำคมสร้างแรงบันดาลใจ) -->
+        <div class="bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600 text-white p-4 md:p-5 rounded-2xl shadow-lg orange-glow flex flex-col md:flex-row items-center justify-between gap-4 border border-amber-300/30">
+            <div class="flex items-center space-x-3.5">
+                <div class="w-10 h-10 rounded-xl bg-white/20 backdrop-blur-sm flex items-center justify-center text-2xl flex-shrink-0">
+                    💡
+                </div>
+                <span id="quote-text" class="transition-opacity-300 font-medium text-base md:text-lg italic tracking-wide">"ตบไม่ลง ให้หยอด ตบแล้วหลุด ให้ยิ้มไว้ก่อน!"</span>
             </div>
-            <button onclick="randomQuote()" class="bg-amber-100 hover:bg-white text-amber-900 font-bold px-3 py-1.5 rounded-lg text-xs transition shadow-sm flex items-center whitespace-nowrap">
+            <button onclick="randomQuote()" class="bg-white text-orange-900 hover:bg-amber-50 active:scale-95 font-bold px-4 py-2 rounded-xl text-xs md:text-sm transition-all-300 shadow-md flex items-center whitespace-nowrap self-end md:self-auto border border-orange-100">
                 🎲 สุ่มคำคม
             </button>
         </div>
 
-        <!-- Standings Table -->
-        <div class="bg-white rounded-2xl shadow-sm overflow-hidden border border-slate-100 p-2">
-            <div class="p-4 flex items-center">
-                <span class="text-xl mr-2">🏆</span>
-                <h2 class="text-lg font-black text-amber-900">ตารางคะแนนและอันดับ</h2>
+        <!-- Standings Table (ตารางคะแนนและอันดับ) -->
+        <div class="glass-card rounded-3xl shadow-xl overflow-hidden border border-orange-100/80">
+            <div class="p-5 md:p-6 bg-gradient-to-r from-orange-50 to-amber-50/50 border-b border-orange-100 flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 rounded-2xl bg-orange-500 text-white flex items-center justify-center text-xl shadow-md shadow-orange-500/30">
+                        🏆
+                    </div>
+                    <div>
+                        <h2 class="text-xl font-extrabold text-slate-800">ตารางคะแนนและอันดับ</h2>
+                        <p class="text-slate-500 text-xs">อัปเดตผลการแข่งขันและอันดับตารางคะแนนรวมแบบเรียลไทม์</p>
+                    </div>
+                </div>
             </div>
+
             <div class="overflow-x-auto">
                 <table class="w-full text-center border-collapse">
                     <thead>
-                        <tr class="bg-table-header text-white text-sm font-bold">
-                            <th class="py-3 px-3 rounded-l-lg">อันดับ</th>
-                            <th class="py-3 px-4 text-left">ชื่อนักกีฬา</th>
-                            <th class="py-3 px-3">สังกัด</th>
-                            <th class="py-3 px-3">แข่ง</th>
-                            <th class="py-3 px-3">ชนะ</th>
-                            <th class="py-3 px-3">แพ้</th>
-                            <th class="py-3 px-3">เซตได้</th>
-                            <th class="py-3 px-3">เซตเสีย</th>
-                            <th class="py-3 px-3">ผลต่างเซต</th>
-                            <th class="py-3 px-3 rounded-r-lg">คะแนนรวม</th>
+                        <tr class="orange-gradient text-white text-xs md:text-sm font-semibold tracking-wider">
+                            <th class="py-4 px-3">อันดับ</th>
+                            <th class="py-4 px-4 text-left">ชื่อนักกีฬา</th>
+                            <th class="py-4 px-3">สังกัด / ทีม</th>
+                            <th class="py-4 px-3">แข่ง</th>
+                            <th class="py-4 px-3">ชนะ</th>
+                            <th class="py-4 px-3">แพ้</th>
+                            <th class="py-4 px-3">เซตได้</th>
+                            <th class="py-4 px-3">เซตเสีย</th>
+                            <th class="py-4 px-3">ผลต่างเซต</th>
+                            <th class="py-4 px-4">คะแนนรวม</th>
                         </tr>
                     </thead>
                     <tbody id="standings-table-body" class="divide-y divide-slate-100 text-sm font-medium">
-                        <tr><td colspan="10" class="py-6 text-slate-400">กำลังโหลดข้อมูล...</td></tr>
+                        <tr><td colspan="10" class="py-8 text-slate-400">กำลังโหลดข้อมูลตารางคะแนน...</td></tr>
                     </tbody>
                 </table>
             </div>
         </div>
 
-        <!-- 2 Column Layout -->
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        <!-- 2 Column Layout (ส่วนบันทึกข้อมูล) -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
 
             <!-- Left Box: Player List -->
-            <div class="lg:col-span-4 space-y-4">
-                <div class="bg-white rounded-2xl shadow-sm p-5 border border-slate-100">
-                    <div class="flex justify-between items-center mb-4">
+            <div class="lg:col-span-4 space-y-6">
+                <div class="glass-card rounded-3xl shadow-xl p-6 border border-orange-100/80">
+                    <div class="flex justify-between items-center mb-5 pb-3 border-b border-slate-100">
                         <div class="flex items-center text-slate-800 font-extrabold text-base">
-                            <span class="text-orange-500 mr-2 text-lg">👥</span>
+                            <div class="w-8 h-8 rounded-lg bg-orange-100 text-orange-600 flex items-center justify-center mr-2.5">
+                                <i class="fa-solid fa-users"></i>
+                            </div>
                             <span>รายชื่อนักกีฬา</span>
                         </div>
-                        <button onclick="clearPlayers()" class="bg-red-50 text-red-500 hover:bg-red-100 border border-red-200 text-xs font-bold px-2.5 py-1 rounded-lg transition">
-                            🗑️ ล้างนักกีฬา
+                        <button onclick="clearPlayers()" class="bg-rose-50 text-rose-600 hover:bg-rose-100 active:scale-95 border border-rose-200 text-xs font-bold px-3 py-1.5 rounded-xl transition-all-300 flex items-center gap-1">
+                            <i class="fa-solid fa-trash-can text-[10px]"></i> ล้างนักกีฬา
                         </button>
                     </div>
 
-                    <form onsubmit="handleAddPlayer(event)" class="space-y-3">
-                        <input id="player-name" type="text" placeholder="ชื่อ-นามสกุล" required class="w-full px-3 py-2 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-orange-500 bg-slate-50/50">
-                        <input id="player-club" type="text" placeholder="สังกัด / ทีม" class="w-full px-3 py-2 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-orange-500 bg-slate-50/50">
-                        <button type="submit" class="w-full bg-custom-orange hover:bg-orange-700 text-white font-bold py-2.5 rounded-xl text-sm transition shadow-sm">
-                            บันทึกข้อมูล
+                    <form onsubmit="handleAddPlayer(event)" class="space-y-3.5">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-600 mb-1">ชื่อ-นามสกุล นักกีฬา *</label>
+                            <input id="player-name" type="text" placeholder="ระบุชื่อนักกีฬา" required class="w-full px-3.5 py-2.5 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent bg-slate-50/50 transition-all-300">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-600 mb-1">สังกัด / ทีม</label>
+                            <input id="player-club" type="text" placeholder="ระบุสังกัดหรือชมรม (ถ้ามี)" class="w-full px-3.5 py-2.5 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent bg-slate-50/50 transition-all-300">
+                        </div>
+                        <button type="submit" class="w-full orange-gradient hover:opacity-95 active:scale-95 text-white font-bold py-3 rounded-xl text-sm transition-all-300 shadow-lg shadow-orange-500/25 flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-user-plus"></i> บันทึกข้อมูลนักกีฬา
                         </button>
                     </form>
 
-                    <div class="mt-4 pt-4 border-t border-slate-100">
-                        <ul id="players-list" class="space-y-2 max-h-48 overflow-y-auto text-sm">
-                            <li class="text-slate-400 text-xs text-center py-2">ไม่มีข้อมูลนักกีฬา</li>
+                    <div class="mt-5 pt-4 border-t border-slate-100">
+                        <span class="text-xs font-bold text-slate-400 uppercase tracking-wider block mb-3">รายการนักกีฬาที่ลงทะเบียน</span>
+                        <ul id="players-list" class="space-y-2 max-h-56 overflow-y-auto pr-1">
+                            <li class="text-slate-400 text-xs text-center py-4">ไม่มีข้อมูลนักกีฬา</li>
                         </ul>
                     </div>
                 </div>
             </div>
 
             <!-- Right Box: Record Match & History -->
-            <div class="lg:col-span-8 space-y-6">
+            <div class="lg:col-span-8 space-y-8">
                 <!-- Record Match -->
-                <div class="bg-white rounded-2xl shadow-sm p-5 border border-slate-100">
-                    <div class="flex items-center text-slate-800 font-extrabold text-base mb-4">
-                        <span class="text-orange-500 mr-2 text-lg">➕</span>
+                <div class="glass-card rounded-3xl shadow-xl p-6 border border-orange-100/80">
+                    <div class="flex items-center text-slate-800 font-extrabold text-base mb-5 pb-3 border-b border-slate-100">
+                        <div class="w-8 h-8 rounded-lg bg-orange-100 text-orange-600 flex items-center justify-center mr-2.5">
+                            <i class="fa-solid fa-trophy"></i>
+                        </div>
                         <span>บันทึกผลการแข่งขัน</span>
                     </div>
 
-                    <form onsubmit="handleAddMatch(event)" class="space-y-4">
-                        <div class="grid grid-cols-2 gap-3">
-                            <select id="p1-select" required class="w-full px-3 py-2 border border-slate-200 rounded-xl text-sm bg-slate-50/50 focus:outline-none focus:ring-2 focus:ring-orange-500">
-                                <option value="">เลือกนักกีฬา A</option>
-                            </select>
-                            <select id="p2-select" required class="w-full px-3 py-2 border border-slate-200 rounded-xl text-sm bg-slate-50/50 focus:outline-none focus:ring-2 focus:ring-orange-500">
-                                <option value="">เลือกนักกีฬา B</option>
-                            </select>
+                    <form onsubmit="handleAddMatch(event)" class="space-y-5">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-600 mb-1">นักกีฬา A (ฝั่งซ้าย) *</label>
+                                <select id="p1-select" required class="w-full px-3.5 py-2.5 border border-slate-200 rounded-xl text-sm bg-slate-50/50 focus:outline-none focus:ring-2 focus:ring-orange-500 transition-all-300 font-medium">
+                                    <option value="">เลือกนักกีฬา A</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-600 mb-1">นักกีฬา B (ฝั่งขวา) *</label>
+                                <select id="p2-select" required class="w-full px-3.5 py-2.5 border border-slate-200 rounded-xl text-sm bg-slate-50/50 focus:outline-none focus:ring-2 focus:ring-orange-500 transition-all-300 font-medium">
+                                    <option value="">เลือกนักกีฬา B</option>
+                                </select>
+                            </div>
                         </div>
 
-                        <div class="grid grid-cols-5 gap-2">
-                            <input id="set1" type="text" placeholder="เซต 1" class="w-full text-center px-2 py-2 border border-slate-200 rounded-xl text-sm bg-slate-50/50 focus:ring-2 focus:ring-orange-500 outline-none">
-                            <input id="set2" type="text" placeholder="เซต 2" class="w-full text-center px-2 py-2 border border-slate-200 rounded-xl text-sm bg-slate-50/50 focus:ring-2 focus:ring-orange-500 outline-none">
-                            <input id="set3" type="text" placeholder="เซต 3" class="w-full text-center px-2 py-2 border border-slate-200 rounded-xl text-sm bg-slate-50/50 focus:ring-2 focus:ring-orange-500 outline-none">
-                            <input id="set4" type="text" placeholder="เซต 4" class="w-full text-center px-2 py-2 border border-slate-200 rounded-xl text-sm bg-slate-50/50 focus:ring-2 focus:ring-orange-500 outline-none">
-                            <input id="set5" type="text" placeholder="เซต 5" class="w-full text-center px-2 py-2 border border-slate-200 rounded-xl text-sm bg-slate-50/50 focus:ring-2 focus:ring-orange-500 outline-none">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-600 mb-1.5">คะแนนย่อยแต่ละเซต (เช่น <span class="text-orange-600 font-bold">11-9</span>)</label>
+                            <div class="grid grid-cols-5 gap-2 md:gap-3">
+                                <input id="set1" type="text" placeholder="เซต 1" class="w-full text-center px-2 py-2.5 border border-slate-200 rounded-xl text-sm bg-slate-50/50 focus:ring-2 focus:ring-orange-500 outline-none font-semibold transition-all-300">
+                                <input id="set2" type="text" placeholder="เซต 2" class="w-full text-center px-2 py-2.5 border border-slate-200 rounded-xl text-sm bg-slate-50/50 focus:ring-2 focus:ring-orange-500 outline-none font-semibold transition-all-300">
+                                <input id="set3" type="text" placeholder="เซต 3" class="w-full text-center px-2 py-2.5 border border-slate-200 rounded-xl text-sm bg-slate-50/50 focus:ring-2 focus:ring-orange-500 outline-none font-semibold transition-all-300">
+                                <input id="set4" type="text" placeholder="เซต 4" class="w-full text-center px-2 py-2.5 border border-slate-200 rounded-xl text-sm bg-slate-50/50 focus:ring-2 focus:ring-orange-500 outline-none font-semibold transition-all-300">
+                                <input id="set5" type="text" placeholder="เซต 5" class="w-full text-center px-2 py-2.5 border border-slate-200 rounded-xl text-sm bg-slate-50/50 focus:ring-2 focus:ring-orange-500 outline-none font-semibold transition-all-300">
+                            </div>
                         </div>
 
-                        <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 rounded-xl text-sm transition shadow-sm">
-                            บันทึกผลแมตช์
+                        <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 active:scale-95 text-white font-bold py-3 rounded-xl text-sm transition-all-300 shadow-lg shadow-emerald-600/25 flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-floppy-disk"></i> บันทึกผลแมตช์
                         </button>
                     </form>
 
                     <!-- History Table -->
-                    <div class="mt-6 pt-4 border-t border-slate-100">
-                        <div class="flex justify-between items-center mb-3">
-                            <span class="font-extrabold text-slate-800 text-sm">ประวัติการแข่งขัน</span>
-                            <button onclick="clearMatches()" class="bg-red-50 text-red-500 hover:bg-red-100 border border-red-200 text-xs font-bold px-2 py-1 rounded-lg transition">
-                                🗑️ ล้างประวัติแข่ง
+                    <div class="mt-8 pt-5 border-t border-slate-100">
+                        <div class="flex justify-between items-center mb-4">
+                            <div class="flex items-center space-x-2">
+                                <i class="fa-solid fa-clock-rotate-left text-orange-500"></i>
+                                <span class="font-extrabold text-slate-800 text-sm">ประวัติการแข่งขัน</span>
+                            </div>
+                            <button onclick="clearMatches()" class="bg-rose-50 text-rose-600 hover:bg-rose-100 active:scale-95 border border-rose-200 text-xs font-bold px-3 py-1.5 rounded-xl transition-all-300 flex items-center gap-1">
+                                <i class="fa-solid fa-trash-can text-[10px]"></i> ล้างประวัติแข่ง
                             </button>
                         </div>
 
-                        <div class="overflow-x-auto">
+                        <div class="overflow-x-auto rounded-2xl border border-slate-100 shadow-sm">
                             <table class="w-full text-center text-sm border-collapse">
                                 <thead>
-                                    <tr class="bg-history-header text-amber-900 text-xs font-bold">
-                                        <th class="py-2.5 px-2">คู่ที่</th>
-                                        <th class="py-2.5 px-3 text-left">คู่แข่งขัน</th>
-                                        <th class="py-2.5 px-2">ผลเซตรวม</th>
-                                        <th class="py-2.5 px-2">ผู้ชนะ</th>
-                                        <th class="py-2.5 px-2">ลบ</th>
+                                    <tr class="orange-gradient-soft text-orange-950 text-xs font-bold">
+                                        <th class="py-3 px-2">คู่ที่</th>
+                                        <th class="py-3 px-3 text-left">คู่แข่งขัน</th>
+                                        <th class="py-3 px-2">ผลเซตรวม</th>
+                                        <th class="py-3 px-3">คะแนนแต่ละเซต</th>
+                                        <th class="py-3 px-2">ผู้ชนะ</th>
+                                        <th class="py-3 px-2">ลบ</th>
                                     </tr>
                                 </thead>
-                                <tbody id="matches-table-body" class="divide-y divide-slate-100">
-                                    <tr><td colspan="5" class="py-4 text-slate-400 text-xs">ไม่มีประวัติการแข่ง</td></tr>
+                                <tbody id="matches-table-body" class="divide-y divide-slate-100 bg-white">
+                                    <tr><td colspan="6" class="py-6 text-slate-400 text-xs">ไม่มีประวัติการแข่ง</td></tr>
                                 </tbody>
                             </table>
                         </div>
@@ -191,31 +263,29 @@
     </main>
 
     <!-- Floating Mini-Game Widget (มินิเกมเคาะปิงปอง) -->
-    <div class="fixed bottom-4 right-4 bg-white rounded-2xl shadow-xl p-3 border border-orange-100 text-center w-36 select-none z-40">
-        <div class="text-xs font-extrabold text-slate-700 mb-1 flex items-center justify-center">
-            <span class="text-orange-500 mr-1">🏓</span> เดาะปิงปอง!
+    <div class="fixed bottom-5 right-5 glass-card rounded-2xl shadow-2xl p-3.5 border border-orange-200/80 text-center w-40 select-none z-40 transition-all-300 hover:scale-105">
+        <div class="text-xs font-extrabold text-slate-700 mb-1.5 flex items-center justify-center gap-1">
+            <span class="text-orange-500">🏓</span> เดาะปิงปอง!
         </div>
-        <button id="pingpong-ball-btn" onclick="playPingPong()" class="w-12 h-12 bg-amber-500 hover:bg-amber-600 active:scale-90 rounded-full mx-auto my-1 flex items-center justify-center text-white text-xl shadow transition-all duration-150">
+        <button id="pingpong-ball-btn" onclick="playPingPong()" class="w-14 h-14 orange-gradient hover:opacity-90 active:scale-90 rounded-full mx-auto my-1 flex items-center justify-center text-white text-2xl shadow-lg shadow-orange-500/40 transition-all duration-150">
             🏓
         </button>
-        <div class="text-xs font-bold text-slate-600 mt-1">
-            Combo: <span id="combo-count" class="text-orange-600 font-extrabold">0</span>
+        <div class="text-xs font-bold text-slate-700 mt-2">
+            Combo: <span id="combo-count" class="text-orange-600 font-black text-sm">0</span>
         </div>
-        <div class="text-[10px] text-slate-400">
-            สูงสุด: <span id="max-combo">0</span>
+        <div class="text-[10px] text-slate-400 font-medium">
+            สูงสุด: <span id="max-combo" class="font-bold text-slate-600">0</span>
         </div>
     </div>
 
-    <!-- Script Logic -->
+    <!-- Script Logic (คงฟังก์ชันเดิมทั้งหมด) -->
     <script>
         let playersMap = {};
 
-        // --- 1. ระบบเอ็ฟเฟคคลิกเมาส์ + เสียง + ขยายขนาดใหญ่ขึ้น ---
+        // --- 1. ระบบเอ็ฟเฟคคลิกเมาส์ + เสียง ---
         document.addEventListener('click', (e) => {
-            // ไม่สร้างเอ็ฟเฟคหากกดบน input หรือ select เพื่อไม่ให้รบกวนการพิมพ์
-            if (['INPUT', 'SELECT', 'OPTION'].includes(e.target.tagName)) return;
+            if (['INPUT', 'SELECT', 'OPTION', 'BUTTON', 'A'].includes(e.target.tagName)) return;
 
-            // สร้างเสียง Pop เมื่อคลิก
             try {
                 const ctx = new (window.AudioContext || window.webkitAudioContext)();
                 const osc = ctx.createOscillator();
@@ -235,7 +305,6 @@
                 osc.stop(ctx.currentTime + 0.06);
             } catch(err) {}
 
-            // สร้างไอคอนลอยขยายใหญ่ (ขนาด text-3xl และสเกลพุ่งเป็น 2 เท่า)
             const particle = document.createElement('div');
             particle.className = 'fixed pointer-events-none text-3xl select-none z-50';
             const icons = ['🏓', '⚪', '🔥', '✨', '💥', '🏆'];
@@ -275,18 +344,83 @@
             }, 150);
         }
 
-        // --- 3. ระบบมินิเกมเคาะปิงปอง ---
+        // --- 3. ระบบมินิเกมเคาะปิงปอง (พร้อมเสียง + เอ็ฟเฟกต์) ---
         let combo = 0;
         let comboTimer = null;
         let maxCombo = parseInt(localStorage.getItem("pingpong_max_combo") || "0");
 
         document.addEventListener("DOMContentLoaded", () => {
-            document.getElementById("max-combo").textContent = maxCombo;
+            const maxEl = document.getElementById("max-combo");
+            if (maxEl) maxEl.textContent = maxCombo;
         });
+
+        // ฟังก์ชันเล่นเสียงเคาะปิงปอง (เสียงไม้กระทบลูก)
+        function playPingPongSound(currentCombo) {
+            try {
+                const ctx = new (window.AudioContext || window.webkitAudioContext)();
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+
+                // ปรับระดับเสียง (Pitch) ให้สูงขึ้นตาม Combo
+                const baseFreq = 500 + Math.min(currentCombo * 25, 600); 
+                
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(baseFreq, ctx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(150, ctx.currentTime + 0.07);
+
+                gain.gain.setValueAtTime(0.35, ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.07);
+
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+
+                osc.start();
+                osc.stop(ctx.currentTime + 0.07);
+            } catch (e) {
+                console.error(e);
+            }
+        }
+
+        // ฟังก์ชันสร้างเอ็ฟเฟกต์เอฟเฟกต์ลอยออกจากปุ่ม
+        function createBallParticle(btn) {
+            const rect = btn.getBoundingClientRect();
+            const particle = document.createElement('div');
+            
+            // สุ่มแสดง +1 หรือลูกปิงปอง
+            const items = ['⚪', '🏓', '+1', '✨'];
+            particle.textContent = items[Math.floor(Math.random() * items.length)];
+            particle.className = 'fixed font-black text-orange-500 pointer-events-none select-none z-50 transition-all duration-500 ease-out';
+            
+            // ตำแหน่งเริ่มต้นกลางปุ่ม
+            const startX = rect.left + rect.width / 2 - 10;
+            const startY = rect.top + rect.height / 2 - 10;
+            
+            particle.style.left = `${startX}px`;
+            particle.style.top = `${startY}px`;
+            particle.style.fontSize = '18px';
+            document.body.appendChild(particle);
+
+            // เคลื่อนที่ลอยขึ้นและจางหาย
+            setTimeout(() => {
+                const randomX = (Math.random() - 0.5) * 60;
+                particle.style.transform = `translate(${randomX}px, -70px) scale(1.4)`;
+                particle.style.opacity = '0';
+            }, 10);
+
+            setTimeout(() => particle.remove(), 550);
+        }
 
         function playPingPong() {
             combo++;
-            document.getElementById("combo-count").textContent = combo;
+            
+            // แสดง Combo และอัปเดตสถิติสูงสุด
+            const comboEl = document.getElementById("combo-count");
+            comboEl.textContent = combo;
+            
+            // Effect เด้งขยายตัวเลข Combo
+            comboEl.classList.remove("scale-125");
+            void comboEl.offsetWidth;
+            comboEl.classList.add("scale-125", "transition-transform");
 
             if (combo > maxCombo) {
                 maxCombo = combo;
@@ -294,17 +428,21 @@
                 document.getElementById("max-combo").textContent = maxCombo;
             }
 
-            // Animation เด้งลูก
+            // เล่นเสียง & สร้างเอ็ฟเฟกต์
             const btn = document.getElementById("pingpong-ball-btn");
+            playPingPongSound(combo);
+            createBallParticle(btn);
+
+            // Animation ปุ่มเด้ง
             btn.classList.remove("animate-pingpong");
             void btn.offsetWidth;
             btn.classList.add("animate-pingpong");
 
-            // รีเซ็ต Combo หากไม่ได้เคาะต่อใน 2.5 วินาที
+            // รีเซ็ต Combo หากหยุดเคาะเกิน 2.5 วินาที
             clearTimeout(comboTimer);
             comboTimer = setTimeout(() => {
                 combo = 0;
-                document.getElementById("combo-count").textContent = "0";
+                comboEl.textContent = "0";
             }, 2500);
         }
 
@@ -357,7 +495,7 @@
                 listEl.innerHTML = "";
 
                 if (!data || data.length === 0) {
-                    listEl.innerHTML = '<li class="text-slate-400 text-xs text-center py-2">ไม่มีข้อมูลนักกีฬา</li>';
+                    listEl.innerHTML = '<li class="text-slate-400 text-xs text-center py-4">ไม่มีข้อมูลนักกีฬา</li>';
                     return;
                 }
 
@@ -367,13 +505,13 @@
                     p2Sel.innerHTML += `<option value="${p.id}">${p.name} (${p.club || '-'})</option>`;
 
                     listEl.innerHTML += `
-                        <li class="flex justify-between items-center bg-slate-50 p-2 rounded-xl border border-slate-100">
-                            <div>
-                                <span class="font-bold text-slate-700 text-xs">${p.name}</span>
-                                <span class="text-[10px] text-slate-400 ml-1">(${p.club || '-'})</span>
+                        <li class="flex justify-between items-center bg-slate-50 hover:bg-orange-50/50 p-2.5 rounded-xl border border-slate-100 transition-all-300">
+                            <div class="truncate mr-2">
+                                <span class="font-bold text-slate-800 text-xs block truncate">${p.name}</span>
+                                <span class="text-[10px] text-slate-400 block">${p.club || 'ไม่ระบุสังกัด'}</span>
                             </div>
-                            <button onclick="deletePlayer(${p.id})" class="text-red-400 hover:text-red-600 text-xs px-1">
-                                ✖
+                            <button onclick="deletePlayer(${p.id})" class="text-slate-300 hover:text-rose-500 text-xs px-2 py-1 rounded-lg transition-all-300">
+                                <i class="fa-solid fa-xmark"></i>
                             </button>
                         </li>
                     `;
@@ -391,23 +529,28 @@
                 tbody.innerHTML = "";
 
                 if (!data || data.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="10" class="py-6 text-slate-400">ยังไม่มีข้อมูลคะแนน</td></tr>';
+                    tbody.innerHTML = '<tr><td colspan="10" class="py-8 text-slate-400">ยังไม่มีข้อมูลตารางคะแนน</td></tr>';
                     return;
                 }
 
                 data.forEach(s => {
+                    let rankBadge = `<span class="font-extrabold text-slate-600">${s.rank}</span>`;
+                    if (s.rank === 1) rankBadge = `<span class="inline-flex items-center justify-center w-7 h-7 rounded-full bg-amber-400 text-white font-extrabold text-xs shadow-md shadow-amber-400/30">1</span>`;
+                    else if (s.rank === 2) rankBadge = `<span class="inline-flex items-center justify-center w-7 h-7 rounded-full bg-slate-300 text-slate-700 font-extrabold text-xs shadow-md">2</span>`;
+                    else if (s.rank === 3) rankBadge = `<span class="inline-flex items-center justify-center w-7 h-7 rounded-full bg-amber-700 text-white font-extrabold text-xs shadow-md">3</span>`;
+
                     tbody.innerHTML += `
-                        <tr class="hover:bg-amber-50/30 transition">
-                            <td class="py-3 px-3 font-extrabold text-orange-600">${s.rank}</td>
-                            <td class="py-3 px-4 text-left font-bold text-slate-800">${s.name}</td>
-                            <td class="py-3 px-3 text-slate-500 text-xs">${s.club || '-'}</td>
-                            <td class="py-3 px-3">${s.played}</td>
-                            <td class="py-3 px-3 text-emerald-600 font-bold">${s.won}</td>
-                            <td class="py-3 px-3 text-red-500">${s.lost}</td>
-                            <td class="py-3 px-3 text-slate-600">${s.sets_won}</td>
-                            <td class="py-3 px-3 text-slate-600">${s.sets_lost}</td>
-                            <td class="py-3 px-3 font-bold">${s.set_diff > 0 ? '+' + s.set_diff : s.set_diff}</td>
-                            <td class="py-3 px-3 font-extrabold text-slate-900 bg-orange-50/50">${s.pts}</td>
+                        <tr class="hover:bg-orange-50/40 transition-all-300">
+                            <td class="py-3.5 px-3">${rankBadge}</td>
+                            <td class="py-3.5 px-4 text-left font-bold text-slate-800">${s.name}</td>
+                            <td class="py-3.5 px-3 text-slate-500 text-xs font-normal">${s.club || '-'}</td>
+                            <td class="py-3.5 px-3 text-slate-700 font-semibold">${s.played}</td>
+                            <td class="py-3.5 px-3 text-emerald-600 font-bold">${s.won}</td>
+                            <td class="py-3.5 px-3 text-rose-500 font-semibold">${s.lost}</td>
+                            <td class="py-3.5 px-3 text-slate-600">${s.sets_won}</td>
+                            <td class="py-3.5 px-3 text-slate-600">${s.sets_lost}</td>
+                            <td class="py-3.5 px-3 font-bold ${s.set_diff > 0 ? 'text-emerald-600' : (s.set_diff < 0 ? 'text-rose-500' : 'text-slate-600')}">${s.set_diff > 0 ? '+' + s.set_diff : s.set_diff}</td>
+                            <td class="py-3.5 px-4 font-black text-orange-600 bg-orange-50/30 text-base">${s.pts}</td>
                         </tr>
                     `;
                 });
@@ -424,7 +567,7 @@
                 tbody.innerHTML = "";
 
                 if (!data || data.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="5" class="py-4 text-slate-400 text-xs">ไม่มีประวัติการแข่ง</td></tr>';
+                    tbody.innerHTML = '<tr><td colspan="6" class="py-6 text-slate-400 text-xs">ไม่มีประวัติการแข่ง</td></tr>';
                     return;
                 }
 
@@ -433,14 +576,22 @@
                     const p2Name = playersMap[m.player2_id] || "นักกีฬา";
                     const winnerName = playersMap[m.winner_id] || "-";
 
+                    let setDetails = m.set_details || m.sets_detail || m.sets || 
+                        [m.set1, m.set2, m.set3, m.set4, m.set5].filter(Boolean).join(', ') || '-';
+
                     tbody.innerHTML += `
-                        <tr class="hover:bg-slate-50 transition">
-                            <td class="py-2.5 px-2 text-slate-400 text-xs">${idx + 1}</td>
-                            <td class="py-2.5 px-3 text-left font-bold text-slate-700">${p1Name} <span class="text-xs text-slate-400 font-normal">vs</span> ${p2Name}</td>
-                            <td class="py-2.5 px-2 font-extrabold text-orange-600">${m.p1_score} - ${m.p2_score}</td>
-                            <td class="py-2.5 px-2 text-emerald-600 font-bold text-xs">${winnerName}</td>
-                            <td class="py-2.5 px-2">
-                                <button onclick="deleteMatch(${m.id})" class="text-slate-300 hover:text-red-500 transition">
+                        <tr class="hover:bg-slate-50/80 transition-all-300">
+                            <td class="py-3 px-2 text-slate-400 text-xs font-semibold">${idx + 1}</td>
+                            <td class="py-3 px-3 text-left font-bold text-slate-800">${p1Name} <span class="text-xs text-orange-400 font-normal mx-1">vs</span> ${p2Name}</td>
+                            <td class="py-3 px-2 font-black text-orange-600 text-base">${m.p1_score} - ${m.p2_score}</td>
+                            <td class="py-3 px-3">
+                                <span class="inline-block bg-slate-100 text-slate-700 px-2.5 py-1 rounded-lg text-xs font-medium border border-slate-200/60">${setDetails}</span>
+                            </td>
+                            <td class="py-3 px-2 text-emerald-600 font-bold text-xs">
+                                <span class="inline-flex items-center gap-1"><i class="fa-solid fa-crown text-[10px] text-amber-500"></i> ${winnerName}</span>
+                            </td>
+                            <td class="py-3 px-2">
+                                <button onclick="deleteMatch(${m.id})" class="text-slate-300 hover:text-rose-500 transition-all-300 p-1">
                                     <i class="fa-solid fa-trash-can text-xs"></i>
                                 </button>
                             </td>
@@ -497,10 +648,12 @@
             let p1Score = 0;
             let p2Score = 0;
             const setIds = ["set1", "set2", "set3", "set4", "set5"];
+            let rawSets = [];
 
             setIds.forEach(id => {
                 const val = document.getElementById(id).value.trim();
                 if (val && val.includes("-")) {
+                    rawSets.push(val);
                     const parts = val.split("-");
                     const s1 = parseInt(parts[0]);
                     const s2 = parseInt(parts[1]);
@@ -511,6 +664,8 @@
                 }
             });
 
+            const setDetailsString = rawSets.join(", ");
+
             const res = await fetch("/api/matches", {
                 method: "POST",
                 headers: getHeaders(),
@@ -518,7 +673,13 @@
                     player1_id: parseInt(p1),
                     player2_id: parseInt(p2),
                     p1_score: p1Score,
-                    p2_score: p2Score
+                    p2_score: p2Score,
+                    set_details: setDetailsString,
+                    set1: document.getElementById("set1").value.trim(),
+                    set2: document.getElementById("set2").value.trim(),
+                    set3: document.getElementById("set3").value.trim(),
+                    set4: document.getElementById("set4").value.trim(),
+                    set5: document.getElementById("set5").value.trim()
                 })
             });
 
@@ -567,6 +728,98 @@
             a.click();
             a.remove();
         }
+        // --- 5. ระบบ Screen Saver (พักหน้าจอพร้อมรูปเด้งไปมา) ---
+        let idleTimer = null;
+        const IDLE_TIME_LIMIT = 20000; // เวลาตั้งต้น: 20 วินาที (20,000 ms)
+        let ssAnimationId = null;
+
+        let ssX = 100, ssY = 100;
+        let ssVx = 2.5, ssVy = 2.5;
+
+        function startScreensaver() {
+            const ss = document.getElementById("screensaver");
+            const img = document.getElementById("screensaver-logo");
+            if (!ss || !img) return;
+
+            ss.classList.remove("hidden");
+
+            const imgWidth = img.offsetWidth || 100;
+            const imgHeight = img.offsetHeight || 100;
+
+            // สุ่มตำแหน่งเริ่มต้นของโลโก้
+            ssX = Math.random() * (window.innerWidth - imgWidth);
+            ssY = Math.random() * (window.innerHeight - imgHeight);
+
+            // สุ่มทิศทางการเคลื่อนที่
+            ssVx = (Math.random() > 0.5 ? 1 : -1) * (2 + Math.random() * 1.5);
+            ssVy = (Math.random() > 0.5 ? 1 : -1) * (2 + Math.random() * 1.5);
+
+            function animate() {
+                const maxX = window.innerWidth - imgWidth;
+                const maxY = window.innerHeight - imgHeight;
+
+                ssX += ssVx;
+                ssY += ssVy;
+
+                // ตรวจสอบการชนขอบซ้าย-ขวา
+                if (ssX <= 0) {
+                    ssX = 0;
+                    ssVx *= -1;
+                } else if (ssX >= maxX) {
+                    ssX = maxX;
+                    ssVx *= -1;
+                }
+
+                // ตรวจสอบการชนขอบบน-ล่าง
+                if (ssY <= 0) {
+                    ssY = 0;
+                    ssVy *= -1;
+                } else if (ssY >= maxY) {
+                    ssY = maxY;
+                    ssVy *= -1;
+                }
+
+                img.style.left = `${ssX}px`;
+                img.style.top = `${ssY}px`;
+
+                ssAnimationId = requestAnimationFrame(animate);
+            }
+
+            if (ssAnimationId) cancelAnimationFrame(ssAnimationId);
+            ssAnimationId = requestAnimationFrame(animate);
+        }
+
+        function stopScreensaver() {
+            const ss = document.getElementById("screensaver");
+            if (ss) ss.classList.add("hidden");
+
+            if (ssAnimationId) {
+                cancelAnimationFrame(ssAnimationId);
+                ssAnimationId = null;
+            }
+        }
+
+        function resetIdleTimer() {
+            stopScreensaver();
+            clearTimeout(idleTimer);
+            idleTimer = setTimeout(startScreensaver, IDLE_TIME_LIMIT);
+        }
+
+        // ตรวจจับการตอบสนองจากผู้ใช้งานทุกรูปแบบ
+        ["mousemove", "mousedown", "keypress", "touchstart", "scroll"].forEach(evt => {
+            window.addEventListener(evt, resetIdleTimer, true);
+        });
+
+        // เริ่มนับเวลาเมื่อโหลดหน้าเว็บสำเร็จ
+        document.addEventListener("DOMContentLoaded", resetIdleTimer);
     </script>
+    
+    <!-- Screensaver Overlay (โหมดพักหน้าจอ) -->
+    <div id="screensaver" class="fixed inset-0 bg-black/85 backdrop-blur-md z-50 hidden overflow-hidden select-none">
+        <div class="absolute top-6 left-6 text-white/40 text-xs font-light flex items-center gap-2">
+            <i class="fa-solid fa-moon"></i> โหมดพักหน้าจอ (ขยับเมาส์หรือกดปุ่มเพื่อกลับเข้าสู่หน้าเว็บ)
+        </div>
+        <img id="screensaver-logo" src="/static/logo.jpg" alt="Logo" class="w-24 h-24 md:w-32 md:h-32 object-contain absolute rounded-full shadow-2xl border-2 border-orange-500/60" onerror="this.src='https://cdn-icons-png.flaticon.com/5xl/3135/3135715.png';">
+    </div>
 </body>
 </html>

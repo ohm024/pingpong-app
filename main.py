@@ -34,6 +34,7 @@ class MatchCreate(BaseModel):
     player2_id: int
     p1_score: int
     p2_score: int
+    set_details: Optional[str] = None
 
 
 # --- 1. ระบบ Authentication (Login & Logout) ---
@@ -147,6 +148,7 @@ def create_match(
         p2_score=match.p2_score,
         winner_id=winner_id,
         workspace_id=x_workspace_id,
+        set_details=match.set_details  # 🟢 บันทึกคะแนนย่อยลงฐานข้อมูล
     )
     db.add(db_match)
     db.commit()
