@@ -455,15 +455,7 @@
             };
         }
 
-        document.addEventListener("DOMContentLoaded", () => {
-            let ws = localStorage.getItem("workspace_id");
-            if (!ws) {
-                ws = "101";
-                localStorage.setItem("workspace_id", ws);
-            }
-            document.getElementById("current-workspace-name").textContent = ws;
-            loadAllData();
-        });
+
 
         function switchWorkspace() {
             const current = localStorage.getItem("workspace_id") || "101";
@@ -810,8 +802,44 @@
             window.addEventListener(evt, resetIdleTimer, true);
         });
 
-        // เริ่มนับเวลาเมื่อโหลดหน้าเว็บสำเร็จ
-        document.addEventListener("DOMContentLoaded", resetIdleTimer);
+    // บรรทัด 816
+        document.addEventListener("DOMContentLoaded", () => {
+            const isSessionActive = sessionStorage.getItem("app_session_active");
+
+            if (!isSessionActive) {
+                const newRoom = "room-" + Math.floor(1000 + Math.random() * 9000);
+                localStorage.setItem("workspace_id", newRoom);
+                sessionStorage.setItem("app_session_active", "true");
+            }
+
+            const ws = localStorage.getItem("workspace_id") || "room-1001";
+            const el = document.getElementById("current-workspace-name");
+            if (el) el.textContent = ws;
+
+            if (typeof loadAllData === "function") {
+                loadAllData();
+            }
+        });
+
+        // ฟังก์ชันเปลี่ยนห้อง (วางไว้ใต้ DOMContentLoaded)
+        function switchWorkspace() {
+            const current = localStorage.getItem("workspace_id") || "";
+            const input = prompt("ระบุรหัสห้องที่ต้องการเปลี่ยน หรือสร้างห้องใหม่:", current);
+            
+            if (input !== null && input.trim() !== "") {
+                const cleanRoom = input.trim();
+                localStorage.setItem("workspace_id", cleanRoom);
+                sessionStorage.setItem("app_session_active", "true");
+                
+                const el = document.getElementById("current-workspace-name");
+                if (el) el.textContent = cleanRoom;
+
+                if (typeof loadAllData === "function") {
+                    loadAllData();
+                }
+            }
+        }
+        const switchworkspace = switchWorkspace;
     </script>
     
     <!-- Screensaver Overlay (โหมดพักหน้าจอ) -->
