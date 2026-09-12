@@ -1,17 +1,26 @@
-# database.py
+import os
 from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker, declarative_base
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import sessionmaker
 
-# ตั้งค่าฐานข้อมูล SQLite
-SQLALCHEMY_DATABASE_URL = "sqlite:///./pingpong.db"
+# ดึงค่า DATABASE_URL จาก Render (ถ้าไม่มีให้สลับไปใช้ SQLite ในเครื่องตัวเอง)
+DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./pingpong.db")
 
-engine = create_engine(
-    SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False}
-)
+# แปลง prefix จาก postgres:// เป็น postgresql:// เพื่อให้ SQLAlchemy รองรับ
+if DATABASE_URL.startswith("postgres://"):
+    DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
+
+# กำหนดค่า Engine ตามประเภทของฐานข้อมูล
+if DATABASE_URL.startswith("sqlite"):
+    engine = create_engine(
+        DATABASE_URL, connect_args={"check_same_thread": False}
+    )
+else:
+    engine = create_engine(DATABASE_URL)
+
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()
 
-# Dependency สำหรับดึง Database Session ในแต่ละ Request
 def get_db():
     db = SessionLocal()
     try:
