@@ -34,6 +34,7 @@ class MatchCreate(BaseModel):
     player2_id: int
     p1_score: int
     p2_score: int
+    
 
 
 # --- 1. ระบบ Authentication (Login & Logout) ---
