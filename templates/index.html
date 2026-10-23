@@ -29,7 +29,7 @@
         <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
             <div class="flex items-center space-x-3">
                 <div class="w-12 h-12 bg-white rounded-full flex items-center justify-center p-1 shadow">
-                    <img src="/static/logo.jpg" alt="Logo" class="w-full h-full object-contain rounded-full" onerror="this.onerror=null; this.src='https://cdn-icons-png.flaticon.com/5xl/3135/3135715.png';">
+                    <img src="/static/logo.jpg" alt="Logo" class="w-full h-full object-contain rounded-full" onerror="this.onerror=null; this.src='https://cdn-icons-png.flaticon.com/512/3135/3135715.png';">
                 </div>
                 <h1 class="text-2xl font-black tracking-wide">KMITL TABLE TENNIS CLUB 🏓</h1>
             </div>
@@ -238,8 +238,8 @@
             particle.className = 'fixed pointer-events-none text-3xl select-none z-50';
             const icons = ['🏓', '⚪', '🔥', '✨', '💥', '🏆'];
             particle.textContent = icons[Math.floor(Math.random() * icons.length)];
-            particle.style.left = `${e.clientX - 16}px`;
-            particle.style.top = `${e.clientY - 16}px`;
+            particle.style.left = `${e.clientX}px`;
+            particle.style.top = `${e.clientY}px`;
             particle.style.transition = 'all 0.6s cubic-bezier(0.18, 0.89, 0.32, 1.28)';
             document.body.appendChild(particle);
 
@@ -429,9 +429,9 @@
                     const p2Name = playersMap[m.player2_id] || "นักกีฬา";
                     const winnerName = playersMap[m.winner_id] || "-";
 
-                    // ดึงคะแนนย่อยแต่ละเซต
-                    let setDetails = m.set_details || m.sets_detail || m.sets || 
-                        [m.set1, m.set2, m.set3, m.set4, m.set5].filter(Boolean).join(', ') || '-';
+                    // ดึงคะแนนย่อยแต่ละเซตจาก set_scores
+                    let setDetails = m.set_scores || m.set_details || '-';
+                    if (!setDetails || setDetails.trim() === '') setDetails = '-';
 
                     tbody.innerHTML += `
                         <tr class="hover:bg-slate-50 transition">
@@ -524,12 +524,7 @@
                     player2_id: parseInt(p2),
                     p1_score: p1Score,
                     p2_score: p2Score,
-                    set_details: setDetailsString,
-                    set1: document.getElementById("set1").value.trim(),
-                    set2: document.getElementById("set2").value.trim(),
-                    set3: document.getElementById("set3").value.trim(),
-                    set4: document.getElementById("set4").value.trim(),
-                    set5: document.getElementById("set5").value.trim()
+                    set_scores: setDetailsString // ส่งชื่อฟิลด์ set_scores ให้ตรงกับ backend
                 })
             });
 
