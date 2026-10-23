@@ -3,6 +3,7 @@ import openpyxl
 from typing import Optional
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
+from sqlalchemy import text
 
 from fastapi import FastAPI, Request, Depends, HTTPException, Form, Cookie, Header
 from fastapi.responses import HTMLResponse, FileResponse, RedirectResponse
@@ -12,11 +13,9 @@ from fastapi.templating import Jinja2Templates
 from database import engine, Base, get_db
 import models
 
-# สร้างตารางข้อมูลเมื่อเริ่มต้นแอป
+# สร้างตารางข้อมูลและตรวจสอบคอลัมน์ set_scores เมื่อเริ่มต้นแอป
 Base.metadata.create_all(bind=engine)
-from sqlalchemy import text
 
-# เพิ่มคอลัมน์ set_scores ให้อัตโนมัติถ้ายังไม่มีในฐานข้อมูล
 with engine.connect() as conn:
     conn.execute(text("ALTER TABLE matches ADD COLUMN IF NOT EXISTS set_scores VARCHAR DEFAULT '';"))
     conn.commit()
@@ -40,7 +39,7 @@ class MatchCreate(BaseModel):
     player2_id: int
     p1_score: int
     p2_score: int
-    
+    set_scores: Optional[str] = ""  # เพิ่มรับค่าคะแนนเซตย่อย
 
 
 # --- 1. ระบบ Authentication (Login & Logout) ---
@@ -152,6 +151,7 @@ def create_match(
         player2_id=match.player2_id,
         p1_score=match.p1_score,
         p2_score=match.p2_score,
+        set_scores=match.set_scores,  # บันทึกคะแนนแต่ละเซตย่อย
         winner_id=winner_id,
         workspace_id=x_workspace_id,
     )
