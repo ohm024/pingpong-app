@@ -17,6 +17,7 @@ class Match(Base):
     player2_id = Column(Integer, ForeignKey("players.id"))
     p1_score = Column(Integer)
     p2_score = Column(Integer)
+    set_scores = Column(String, nullable=True, default="")
     winner_id = Column(Integer, ForeignKey("players.id"))
     workspace_id = Column(String, index=True, default="default")
     

@@ -14,6 +14,12 @@ import models
 
 # สร้างตารางข้อมูลเมื่อเริ่มต้นแอป
 Base.metadata.create_all(bind=engine)
+from sqlalchemy import text
+
+# เพิ่มคอลัมน์ set_scores ให้อัตโนมัติถ้ายังไม่มีในฐานข้อมูล
+with engine.connect() as conn:
+    conn.execute(text("ALTER TABLE matches ADD COLUMN IF NOT EXISTS set_scores VARCHAR DEFAULT '';"))
+    conn.commit()
 
 app = FastAPI()
 
